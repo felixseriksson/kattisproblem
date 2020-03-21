@@ -20,7 +20,8 @@ if factornum > 1:
 
 for d in range(1, int(divisornum**0.5)+2):
     if divisornum % d == 0:
-        divisors.append(d)
+        if d not in primefactors:
+            divisors.append(d)
         if d*d < divisornum:
             divisors.append(int(divisornum/d))
 
@@ -29,11 +30,11 @@ divisors.sort()
 #S = set(divisors)
 S = divisors.copy()
 S.remove(1)
-for i in primefactors:
-    try:
-        S.remove(i)
-    except KeyError:
-        pass
+# for i in primefactors:
+#     try:
+#         S.remove(i)
+#     except KeyError:
+#         pass
 
 
 opt = [float("-inf")]*len(divisors)
