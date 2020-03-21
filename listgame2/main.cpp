@@ -1,61 +1,85 @@
-#include <cstdio>
 #include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <complex>
+#include <sstream>
 #include <iostream>
-
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cassert>
 using namespace std;
 
-typedef long long ll;
-typedef vector<int> vi;
+#define FOR(it,a) for (__typeof((a).begin()) it = (a).begin(); it != (a).end(); ++it)
 
-vi reduct(vi v, const vi &p) {
-  for (int i = 0; i < p.size(); ++i)
-    if (!v[p[i]]--) return vi();
-  return v;
-}
+const int inf = 1000000000;
 
-int gen(vector<int> v, vector<int> lb, int tobeat) {
-  int tot = 0;
-  for (int i = 0; i < v.size(); ++i) tot += v[i];
-
-  if (lb.empty()) lb.push_back(0);
-  else
-  for (int i = 0; ++lb[i] >= v.size(); ++i) {
-    if (i == lb.size()-1) {
-      lb = vi(lb.size()+1, 0);
-      break;
-    } else {
-      lb[i] = lb[i+1]+1;
-      for (int j = 0; j < i; ++j)
-	lb[j] = lb[i];
+int main()
+{
+    long long n, N;
+    cin >> n;
+    N = n;
+    vector<long long> primeFactors;
+    for (long long f = 2; f * f <= n; f++) {
+        if (n % f == 0) {
+            int cnt = 0;
+            while (n % f == 0) {
+                n /= f;
+                cnt ++;
+            }
+            N /= f;
+            primeFactors.push_back(f);
+        }
     }
-  }
-
-  if (tobeat >= tot/lb.size()) return tobeat;
-  vi g = reduct(v, lb);
-  if (!g.empty()) tobeat = 1+gen(g, lb, max(tobeat-1, 0));
-  tobeat = gen(v, lb, tobeat);
-  return tobeat;
-}
-
-int main(void) {
-  ll X;
-  vector<int> v;
-  scanf("%lld", &X);
-  int k = 0;
-  for (ll p = 2; p*p <= X; ++p) {
-    int e = 0;
-    while (X % p == 0) X /= p, ++e;
-    if (e) {
-      ++k;
-      if (e > 1) v.push_back(e-1);
+    if (n > 1) {
+        N /= n;
+        primeFactors.push_back(n);
     }
-  }
-  if (X != 1) ++k;
-  vi lb(1, v.size());
-  if (!v.empty()) k += gen(v, lb, 0);
-  printf("%d\n", k, "end?");
-  int q;
-  cin >> q;
-  return 0;
+    vector<long long> divisors;
+    for (long long f = 1; f * f <= N; f ++) {
+        if (N % f == 0) {
+            divisors.push_back(f);
+            if (f * f < N) {
+                divisors.push_back(N / f);
+            }
+        }
+    }
+    sort(divisors.begin(), divisors.end());
+    set<long long> S(divisors.begin(), divisors.end());
+    S.erase(1);
+    FOR (it, primeFactors) {
+        S.erase(*it);
+    }
+    vector<int> opt(divisors.size(), -inf);
+    opt[0] = 0;
+    FOR (it, S) {
+        int ptr = divisors.size();
+        for (int i = (int)divisors.size() - 1; i >= 0; i--) {
+            while (ptr > 0 && divisors[ptr - 1] > divisors[i] / *it) {
+                ptr --;
+            }
+            if (ptr == 0) {
+                break;
+            }
+            if (*it * divisors[ptr - 1] == divisors[i]) {
+                opt[i] = max(opt[i], opt[ptr - 1] + 1);
+            }
+        }
+    }
+    int maxi = *max_element(opt.begin(), opt.end());
+    cout << maxi + (int)primeFactors.size() << endl;
+    // int q;
+    // cin >> q;
 }
-
