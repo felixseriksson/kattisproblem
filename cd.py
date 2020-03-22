@@ -98,6 +98,7 @@ elif m > n:
 print(ctr)
 #-----------------------------------------------------------------------------------------------------------------------------
 '''
+'''
 from heapq import heapify, heappop
 n, m = [int(x) for x in input().split()]
 
@@ -163,3 +164,12 @@ while True:
             inp = [int(x) for x in input().split()]
         n, m = inp
         continue
+'''
+#test with sets:
+n, m = [int(x) for x in input().split()]
+while (n, m) != (0, 0):
+    sett = set()
+    for i in range(n+m):
+        sett.add(int(input()))
+    print(n+m-len(sett))
+    n, m = [int(x) for x in input().split()]
