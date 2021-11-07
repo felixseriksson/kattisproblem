@@ -1,0 +1,1 @@
+print("".join([a[0] for a in ["".join(g) for k, g in __import__('itertools', globals(), locals(), [], 0).groupby(input())]]))
