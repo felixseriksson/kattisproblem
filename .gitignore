@@ -132,3 +132,6 @@ dmypy.json
 .pyre/
 
 paintball2.py
+
+# cpp output files
+*.out
