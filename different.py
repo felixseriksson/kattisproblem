@@ -1,0 +1,1 @@
+print("\n".join([str(abs((lambda x: int(x[0]) - int(x[1]))(line.strip().split()))) for line in __import__('sys', globals(), locals(), [], 0).stdin.readlines()]))
