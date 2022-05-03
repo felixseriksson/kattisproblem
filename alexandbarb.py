@@ -1,0 +1,1 @@
+print("Barb" if (lambda k, m, n: k % (m + n) < m)(*[int(x) for x in input().split()]) else "Alex")
