@@ -1,0 +1,1 @@
+print((lambda x, y: sum([y[i] for i in range(2, x, 3)]))(int(input()), sorted([int(x) for x in input().split()], reverse = True)))
