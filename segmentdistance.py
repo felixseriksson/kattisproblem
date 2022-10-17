@@ -1,42 +1,42 @@
-def dot(a, b):
-    return a[0]*b[0] + a[1]*b[1]
+from math import sqrt
 
-def dist(a, b):
-    return ((a[0] - b[0])**2 + (a[1] - b[1])**2)**0.5
+def segmentsintersect(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4):
+    dx_1 = x_2 - x_1
+    dy_1 = y_2 - y_1
+    dx_2 = x_4 - x_3
+    dy_2 = y_4 - y_3
+    delta = dx_2 * dy_1 - dy_2 * dx_1
+    if delta == 0:
+        return False
+    s = (dx_1 * (y_3 - y_1) + dy_1 * (x_1 - x_3)) / delta
+    t = (dx_2 * (y_1 - y_3) + dy_2 * (x_3 - x_1)) / (-delta)
+    return (0 <= s <= 1) and (0 <= t <= 1)
 
-def segseg(a, b, c, d):
-    if properinter(a, b, c, d):
+def pointsegmentsquareddistance(p_x, p_y, x_1, y_1, x_2, y_2):
+    dx = x_2 - x_1
+    dy = y_2 - y_1
+    if dx == 0 and dy == 0:
+        return (p_x - x_1) * (p_x - x_1) + (p_y - y_1) * (p_y - y_1)
+    t = ((p_x - x_1) * dx + (p_y - y_1) * dy) / (dx * dx + dy * dy)
+    if t < 0:
+        return (p_x - x_1) * (p_x - x_1) + (p_y - y_1) * (p_y - y_1)
+    elif t > 1:
+        return (p_x - x_2) * (p_x - x_2) + (p_y - y_2) * (p_y - y_2)
+    else:
+        x = x_1 + t * dx
+        y = y_1 + t * dy
+        return (p_x - x) * (p_x - x) + (p_y - y) * (p_y - y)
+
+def segmentsquareddistance(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4):
+    if segmentsintersect(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4):
         return 0
-    return min(segpoint(a, b, c), segpoint(a, b, d), segpoint(c, d, a), segpoint(c, d, b))
+    d = []
+    d.append(pointsegmentsquareddistance(x_1, y_1, x_3, y_3, x_4, y_4))
+    d.append(pointsegmentsquareddistance(x_2, y_2, x_3, y_3, x_4, y_4))
+    d.append(pointsegmentsquareddistance(x_3, y_3, x_1, y_1, x_2, y_2))
+    d.append(pointsegmentsquareddistance(x_4, y_4, x_1, y_1, x_2, y_2))
+    return min(d)
 
-def cross(a, b):
-    return a[0]*b[1] - a[1]*b[0]
-
-def linedist(a, b, c):
-    num = abs((b[0] - a[0])*(a[1] - c[1]) - (a[0] - c[0])*(b[1] - a[1]))
-    den = ((b[0] - a[0])**2 + (b[1] - a[1])**2)**0.5
-    return num/den
-
-def segpoint(a, b, c):
-    if a == b:
-        return dist(a, c)
-    v = [b[0]-a[0], b[1]-a[1]]
-    if dot(v,a) < dot(v,c) and dot(v,c) < dot(v,b):
-        return linedist(a, b, c)
-    return min(dist(a, c), dist(b, c))
-
-def orient(a, b, c):
-    v1 = [b[0]-a[0], b[1]-a[1]]
-    v2 = [c[0]-a[0], c[1]-a[1]]
-    return cross(v1, v2)
-
-def properinter(a, b, c, d):
-    oa, ob, oc, od = orient(c, d, a), orient(c, d, b), orient(a, b, c), orient(a, b, d)
-    if oa*ob < 0 and oc*od < 0:
-        return True
-    return False
-
-# print(linedist([0, 0], [-1, -1], [0,-1]))
 for _ in range(int(input())):
-    x1, y1, x2, y2, x3, y3, x4, y4 = [int(x) for x in input().split()]
-    print(segseg([x1, y1], [x2, y2], [x3, y3], [x4, y4]))
+    x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4 = [int(x) for x in input().split()]
+    print("{:.2f}".format(sqrt(segmentsquareddistance(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4))))
